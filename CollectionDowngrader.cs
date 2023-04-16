@@ -96,6 +96,7 @@ namespace CollectionDowngrader
             {
                 Console.Error.WriteLine($"Cannot create output file for writing: {ioe.Message}");
 
+                db.Dispose();
                 return 1;
             }
 
@@ -107,24 +108,38 @@ namespace CollectionDowngrader
             lastModCollection = collections.MaxBy(i => i.LastModified.Ticks);
             lastMod = lastModCollection is null ? DateTimeOffset.Now : lastModCollection.LastModified;
 
-            binWriter.Write((int) lastMod.Ticks);  // last modification date
-            binWriter.Write(collectionCount);  // collection count
-
-            foreach (BeatmapCollection collection in collections)
+            try
             {
-                binWriter.Write((byte) 0x0b);
-                binWriter.Write(collection.Name);  // collection name
-                binWriter.Write(collection.BeatmapMD5Hashes.Count);  // beatmap count
 
-                foreach (string hash in collection.BeatmapMD5Hashes)
+                binWriter.Write((int)lastMod.Ticks); // last modification date
+                binWriter.Write(collectionCount); // collection count
+
+                foreach (BeatmapCollection collection in collections)
                 {
-                    binWriter.Write((byte) 0x0b);
-                    binWriter.Write(hash);  // beatmap MD5 hash
+                    binWriter.Write((byte)0x0b);
+                    binWriter.Write(collection.Name); // collection name
+                    binWriter.Write(collection.BeatmapMD5Hashes.Count); // beatmap count
+
+                    foreach (string hash in collection.BeatmapMD5Hashes)
+                    {
+                        binWriter.Write((byte)0x0b);
+                        binWriter.Write(hash); // beatmap MD5 hash
+                    }
                 }
+            }
+            catch (IOException ioe)
+            {
+                Console.Error.WriteLine($"Error writing data: {ioe.Message}");
+
+                binWriter.Close();
+                outStream.Close();
+                db.Dispose();
+                return 1;
             }
 
             binWriter.Close();
             outStream.Close();
+            db.Dispose();
 
             Console.WriteLine("Everything is OK.");
 
