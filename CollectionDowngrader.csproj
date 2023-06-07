@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Realm" Version="10.20.0" />
+      <PackageReference Include="Realm" Version="10.21.1" />
     </ItemGroup>
 
 </Project>

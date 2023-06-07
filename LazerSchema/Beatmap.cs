@@ -68,6 +68,8 @@ namespace CollectionDowngrader.LazerSchema
 
         public double TimelineZoom { get; set; }
 
+        public double? EditorTimestamp { get; set; }
+
         public int CountdownOffset { get; set; }
 
         // Author kabii
