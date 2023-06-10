@@ -70,7 +70,8 @@ namespace CollectionDowngrader
             catch (RealmException re)
             {
                 Console.Error.WriteLine($"Error opening database:\n\n{re.Message}");
-                if (re.Message.Contains("is less than last set version"))
+                if (re.Message.Contains("less than last set version") ||
+                    re.Message.Contains("does not equal last set version"))
                 {
                     Console.Error.WriteLine("It seemed like the specified osu! (lazer) database is in a new format " +
                                             "which is not compatible with this version of CollectionDowngrader.");
