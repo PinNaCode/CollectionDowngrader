@@ -1,4 +1,5 @@
-﻿using Realms;
+﻿using System.Text.RegularExpressions;
+using Realms;
 using Realms.Exceptions;
 using CollectionDowngrader.LazerSchema;
 
@@ -70,13 +71,49 @@ namespace CollectionDowngrader
             catch (RealmException re)
             {
                 Console.Error.WriteLine($"Error opening database:\n\n{re.Message}");
-                if (re.Message.Contains("less than last set version") ||
-                    re.Message.Contains("does not equal last set version"))
+
+                // example msg: "Provided schema version A does not equal last set version B."
+                // example msg2: "Provided schema version A is less than last set version B."
+                
+                if (re.Message.Contains("less than last set version"))
                 {
                     Console.Error.WriteLine("It seemed like the specified osu! (lazer) database is in a new format " +
                                             "which is not compatible with this version of CollectionDowngrader.");
                     Console.Error.WriteLine("\nYou can go check the project page to see if there's a new release, " +
                                             "or file an Issue on GitHub to let me know it needs updating.");
+                }
+                else
+                {
+                    Regex regex = new Regex(@"Provided schema version (\d+) does not equal last set version (\d+).");
+                    
+                    Match match = regex.Match(re.Message);
+
+                    if (match.Success && match.Groups.Count == 3)
+                    {
+                        int providedVersion = int.Parse(match.Groups[1].Value);
+                        int lastSetVersion = int.Parse(match.Groups[2].Value);
+                        
+                        // if provided version is smaller than the last set version, it means CollectionDowngrader is too old
+                        // ask the user to update in this case
+                        
+                        if (providedVersion < lastSetVersion)
+                        {
+                            Console.Error.WriteLine("It seemed like the specified osu! (lazer) database is in a new format " +
+                                                    "which is not compatible with this version of CollectionDowngrader.");
+                            Console.Error.WriteLine("\nYou can go check the project page to see if there's a new release, " +
+                                                    "or file an Issue on GitHub to let me know it needs updating.");
+                        }
+                        else
+                        {
+                            // otherwise, user installed CollectionDowngrader is too new for the database
+                            // ask the user to update osu! (lazer) client or downgrade CollectionDowngrader in this case
+                            
+                            Console.Error.WriteLine("It seemed like the specified osu! (lazer) database is in an old format " +
+                                                    "which is not compatible with this version of CollectionDowngrader.");
+                            Console.Error.WriteLine("\nYou can try to update your osu! (lazer) client, or downgrade " +
+                                                    "CollectionDowngrader to an older version.");
+                        }
+                    }
                 }
 
                 return 1;
