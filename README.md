@@ -1,7 +1,7 @@
 CollectionDowngrader
 =========================
 
-> **Warning**
+> [!WARNING]
 >
 > This operation (Importing data from lazer to stable) is not officially supported by osu!, so use this at your own risk and don't forget to backup your data before downgrading!
 
@@ -9,7 +9,7 @@ A very simple and tiny program that converts osu! (lazer) collection data to osu
 
 ## Usage
 
-> **Note**
+> [!NOTE]
 >
 > You should already know where your osu! installations are located and what you are trying to do.
 
@@ -24,7 +24,7 @@ This command reads the collection data from osu! (lazer) at the default installa
 CollectionDowngrader.exe %APPDATA%/osu/client.realm collection.db
 ````
 
-> **Warning**
+> [!WARNING]
 >
 > If you already have some collections in your osu! (stable) installation, then you should ***NEVER*** directly overwrite
  the existing collection.db with a new one. Instead, use [CollectionManager][CollectionManager] for merging data in multiple collection databases.
