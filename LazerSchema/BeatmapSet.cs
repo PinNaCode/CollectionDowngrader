@@ -57,14 +57,5 @@ namespace CollectionDowngrader.LazerSchema
                 .Append(" stars)");
             return output.ToString();
         }
-
-        public string ArchiveFilename()
-        {
-            BeatmapMetadata metadata = SelectedBeatmaps.First().Metadata;
-            string beatmapId = OnlineID != -1 ? $"{OnlineID} " : "";
-            return
-                $"{beatmapId}{metadata.Artist.Trunc(30)} - {metadata.Title.Trunc(40)} ({metadata.Author.Username.Trunc(30)}).osz"
-                .RemoveFilenameCharacters();
-        }
     }
 }
