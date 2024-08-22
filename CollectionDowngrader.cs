@@ -7,7 +7,7 @@ namespace CollectionDowngrader
 {
     class CollectionDowngrader
     {
-        const int LazerSchemaVersion = 41;
+        const int LazerSchemaVersion = 42;
 
         private static int Main(string[] args)
         {
